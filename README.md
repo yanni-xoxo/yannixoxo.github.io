@@ -1,7 +1,7 @@
-# yannixoxo.github.io — Pokémon collection
+# yanni-xoxo.github.io — Pokémon collection
 
-Public catalogue at **https://yannixoxo.github.io/pkmncollection/**  
-Add form redirect at **https://yannixoxo.github.io/pkmncollection/add/**
+Public catalogue at **https://yanni-xoxo.github.io/pkmncollection/**  
+Add form redirect at **https://yanni-xoxo.github.io/pkmncollection/add/**
 
 Pipeline: **Google Form → Google Sheet → GitHub Action sync → GitHub Pages**
 
@@ -74,8 +74,8 @@ Optional: if the tab is not named `Form Responses 1`, add secret/variable `PKMNC
 
 Live URLs after deploy:
 
-- https://yannixoxo.github.io/pkmncollection/
-- https://yannixoxo.github.io/pkmncollection/add/
+- https://yanni-xoxo.github.io/pkmncollection/
+- https://yanni-xoxo.github.io/pkmncollection/add/
 
 ### 8. First test
 
