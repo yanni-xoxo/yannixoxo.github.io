@@ -1,0 +1,42 @@
+{
+    "updatedAt": null,
+    "species": [
+        {
+            "id": "mimikyu",
+            "label": "Mimikyu"
+        },
+        {
+            "id": "jigglypuff",
+            "label": "Jigglypuff"
+        },
+        {
+            "id": "wooper",
+            "label": "Wooper"
+        },
+        {
+            "id": "clodsire",
+            "label": "Clodsire"
+        },
+        {
+            "id": "furret",
+            "label": "Furret"
+        },
+        {
+            "id": "drifloon",
+            "label": "Drifloon"
+        },
+        {
+            "id": "mudkip",
+            "label": "Mudkip"
+        },
+        {
+            "id": "cubone",
+            "label": "Cubone"
+        },
+        {
+            "id": "other",
+            "label": "Others"
+        }
+    ],
+    "items": []
+}

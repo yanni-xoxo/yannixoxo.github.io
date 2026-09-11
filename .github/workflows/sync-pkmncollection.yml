@@ -1,0 +1,106 @@
+name: Sync Pokémon catalogue
+
+on:
+    schedule:
+        # Daily full resync (UTC). Adjust if you want a different local time.
+        - cron: "0 16 * * *"
+    workflow_dispatch:
+        inputs:
+            mode:
+                description: "append = new (non-Synced) rows only; full = re-read every row"
+                required: true
+                default: append
+                type: choice
+                options:
+                    - append
+                    - full
+
+permissions:
+    contents: write
+
+jobs:
+    sync:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v5
+              with:
+                  fetch-depth: 0
+
+            - name: Validate secrets
+              shell: bash
+              env:
+                  HAS_GOOGLE_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON != '' }}
+                  HAS_SHEET_ID: ${{ secrets.PKMNCOLLECTION_SHEET_ID != '' }}
+              run: |
+                  if [ "$HAS_GOOGLE_JSON" != "true" ]; then
+                      echo "::error::Missing repository secret GOOGLE_SERVICE_ACCOUNT_JSON"
+                      exit 1
+                  fi
+                  if [ "$HAS_SHEET_ID" != "true" ]; then
+                      echo "::error::Missing repository secret PKMNCOLLECTION_SHEET_ID"
+                      exit 1
+                  fi
+                  echo "Required secrets are present."
+
+            - name: Set up Python
+              uses: actions/setup-python@v6
+              with:
+                  python-version: "3.12"
+
+            - name: Install sync dependencies
+              run: pip install -r scripts/requirements-pkmncollection-sync.txt
+
+            - name: Resolve sync mode
+              id: mode
+              shell: bash
+              run: |
+                  if [ "${{ github.event_name }}" = "schedule" ]; then
+                      echo "mode=full" >> "$GITHUB_OUTPUT"
+                      echo "Scheduled run: using full sync."
+                  else
+                      echo "mode=${{ inputs.mode }}" >> "$GITHUB_OUTPUT"
+                  fi
+
+            - name: Sync catalogue from Google Sheet
+              env:
+                  GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+                  PKMNCOLLECTION_SHEET_ID: ${{ secrets.PKMNCOLLECTION_SHEET_ID }}
+              run: |
+                  if [ "${{ steps.mode.outputs.mode }}" = "full" ]; then
+                      python scripts/sync_pkmncollection.py --full
+                  else
+                      python scripts/sync_pkmncollection.py
+                  fi
+
+            - name: Commit and push changes
+              shell: bash
+              run: |
+                  set -euo pipefail
+                  git config user.name "github-actions[bot]"
+                  git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+                  git add pkmncollection/
+                  if git diff --staged --quiet; then
+                      echo "No catalogue changes to commit."
+                      exit 0
+                  fi
+
+                  if [ "${{ steps.mode.outputs.mode }}" = "full" ]; then
+                      msg="chore(pkmncollection): full resync catalogue from Google Sheet"
+                  else
+                      msg="chore(pkmncollection): sync new items from Google Form"
+                  fi
+                  git commit -m "$msg"
+
+                  for attempt in 1 2 3; do
+                      git fetch origin main
+                      if git pull --rebase origin main && git push origin HEAD:main; then
+                          echo "Pushed successfully."
+                          exit 0
+                      fi
+                      echo "Push race (attempt $attempt); retrying…"
+                      sleep 2
+                  done
+                  echo "::error::Failed to push after rebasing onto origin/main"
+                  exit 1

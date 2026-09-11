@@ -1,0 +1,9 @@
+*.csv
+*.pem
+*-credentials.json
+service-account*.json
+.env
+.DS_Store
+Thumbs.db
+__pycache__/
+*.pyc
