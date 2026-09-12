@@ -1,5 +1,5 @@
 {
-    "updatedAt": "2026-09-12T11:36:16Z",
+    "updatedAt": "2026-09-12T12:15:49Z",
     "species": [
         {
             "id": "mimikyu",
@@ -42,7 +42,9 @@
         {
             "id": "chandelure-pin",
             "name": "Chandelure pin",
-            "species": "other",
+            "species": [
+                "other"
+            ],
             "source": "Bought at acghk 2026",
             "image": "chandelure-pin.jpg",
             "imageThumb": "thumbs/chandelure-pin.jpg",
@@ -52,7 +54,9 @@
         {
             "id": "corner-mimikyu",
             "name": "Corner Mimikyu",
-            "species": "mimikyu",
+            "species": [
+                "mimikyu"
+            ],
             "source": "Who tf knows",
             "image": "corner-mimikyu.jpg",
             "imageThumb": "thumbs/corner-mimikyu.jpg",
@@ -62,7 +66,9 @@
         {
             "id": "cubone-pin",
             "name": "Cubone pin",
-            "species": "cubone",
+            "species": [
+                "cubone"
+            ],
             "source": "Bought at acghk 2026",
             "image": "cubone-pin.jpg",
             "imageThumb": "thumbs/cubone-pin.jpg",
@@ -70,9 +76,24 @@
             "addedAt": "2026-09-12T11:36:14Z"
         },
         {
+            "id": "drifloon-and-ditto-hanging-keychain",
+            "name": "Drifloon and Ditto hanging keychain",
+            "species": [
+                "drifloon",
+                "other"
+            ],
+            "source": "Bought from TaoBao",
+            "image": "drifloon-and-ditto-hanging-keychain.jpg",
+            "imageThumb": "thumbs/drifloon-and-ditto-hanging-keychain.jpg",
+            "sheetRow": 6,
+            "addedAt": "2026-09-12T12:15:49Z"
+        },
+        {
             "id": "mudkip-pin",
             "name": "Mudkip pin",
-            "species": "mudkip",
+            "species": [
+                "mudkip"
+            ],
             "source": "Bought at acghk 2026",
             "image": "mudkip-pin.jpg",
             "imageThumb": "thumbs/mudkip-pin.jpg",
