@@ -41,6 +41,23 @@
         return match ? match.label : id || "Others";
     }
 
+    function itemSpeciesIds(item) {
+        var raw = item && item.species;
+        if (Array.isArray(raw)) {
+            return raw.filter(Boolean);
+        }
+        if (raw) {
+            return [raw];
+        }
+        return ["other"];
+    }
+
+    function speciesLabels(item) {
+        return itemSpeciesIds(item)
+            .map(speciesLabel)
+            .join(", ");
+    }
+
     function formatUpdatedAt(iso) {
         if (!iso) {
             return "not synced yet";
@@ -62,8 +79,8 @@
                 item.name,
                 item.source,
                 item.notes,
-                item.species,
-                speciesLabel(item.species),
+                itemSpeciesIds(item).join(" "),
+                speciesLabels(item),
                 (item.tags || []).join(" ")
             ].join(" ")
         );
@@ -87,7 +104,10 @@
     function filteredItems() {
         var query = normalize(state.query.trim());
         return state.items.filter(function (item) {
-            if (state.speciesFilter !== "all" && item.species !== state.speciesFilter) {
+            if (
+                state.speciesFilter !== "all" &&
+                itemSpeciesIds(item).indexOf(state.speciesFilter) === -1
+            ) {
                 return false;
             }
             if (!query) {
@@ -267,7 +287,7 @@
     function buildCard(item) {
         var card = el("button", "jp-card");
         card.type = "button";
-        card.setAttribute("data-species", item.species || "other");
+        card.setAttribute("data-species", itemSpeciesIds(item).join(" "));
         card.setAttribute("aria-label", "View details for " + (item.name || "item"));
 
         var media = el("div", "jp-card-media");
@@ -359,7 +379,7 @@
 
         title.textContent = item.name || "Untitled item";
         list.textContent = "";
-        addDetailRow(list, "Species", speciesLabel(item.species));
+        addDetailRow(list, "Species", speciesLabels(item));
         addDetailRow(list, "Source", item.source);
         addDetailRow(list, "Notes", item.notes);
 

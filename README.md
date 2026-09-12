@@ -5,7 +5,7 @@ Add form redirect at **https://yanni-xoxo.github.io/pkmncollection/add/**
 
 Pipeline: **Google Form → Google Sheet → GitHub Action sync → GitHub Pages**
 
-- Filters by **Pokémon species** (not item kind)
+- Filters by **Pokémon species** (items can belong to **multiple** species via Form checkboxes)
 - **No Approved column** — every form response is published
 - **Daily scheduled full resync** (UTC 16:00) plus manual append/full runs
 
@@ -21,7 +21,7 @@ Suggested fields (titles matter for column mapping):
 |---------------|------|-------|
 | Item Name | Short answer | Required |
 | Image | File upload | Prefer square photo |
-| Species | Dropdown | Mimikyu, Jigglypuff, Wooper, Clodsire, Furret, Drifloon, Mudkip, Cubone, Others |
+| Species | Checkboxes | Mimikyu, Jigglypuff, Wooper, Clodsire, Furret, Drifloon, Mudkip, Cubone, Others — pick one or more |
 | Source | Short answer | Gift, store, etc. |
 | Notes | Paragraph | Optional |
 

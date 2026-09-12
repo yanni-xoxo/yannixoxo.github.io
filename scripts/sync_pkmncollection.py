@@ -81,10 +81,10 @@ def species_lookup() -> dict[str, str]:
     return lookup
 
 
-def normalize_species(raw: str) -> str:
+def normalize_species_token(raw: str) -> str | None:
     key = raw.strip().lower()
     if not key:
-        return "other"
+        return None
 
     lookup = species_lookup()
     if key in lookup:
@@ -96,12 +96,29 @@ def normalize_species(raw: str) -> str:
         if alias_compact and alias_compact == compact:
             return species_id
 
-    for part in re.split(r"[/,&|]+", key):
-        part = part.strip()
-        if part in lookup:
-            return lookup[part]
+    return None
 
-    return "other"
+
+def parse_species_list(raw: str) -> list[str]:
+    """Parse Form checkbox (or dropdown) values into unique species ids.
+
+    Google Forms checkboxes usually join selections with commas, e.g.
+    "Mimikyu, Wooper, Furret". Also accept newlines, semicolons, pipes, ampersands.
+    """
+    if not raw or not str(raw).strip():
+        return ["other"]
+
+    parts = re.split(r"[\n,;|/&]+", str(raw))
+    ordered: list[str] = []
+    seen: set[str] = set()
+    for part in parts:
+        species_id = normalize_species_token(part)
+        if not species_id or species_id in seen:
+            continue
+        seen.add(species_id)
+        ordered.append(species_id)
+
+    return ordered or ["other"]
 
 
 HEADER_ALIASES = {
@@ -571,7 +588,7 @@ def sync(full_sync: bool = False) -> int:
         item = {
             "id": item_id,
             "name": name,
-            "species": normalize_species(species_raw or "other"),
+            "species": parse_species_list(species_raw),
             "source": cell(row, mapping, "source") or None,
             "notes": cell(row, mapping, "notes") or None,
             "tags": parse_tags(cell(row, mapping, "tags")),
